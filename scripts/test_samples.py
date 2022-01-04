@@ -28,10 +28,13 @@ class errors:
     LEN_MISSMATCH = "[LINE LENGTH MISSMATCH]"
     NO_TARGET_LINE = f"[COULD NOT FIND TARGET LINE]{colors.ENDC} -> None"
 
-    def file_not_found(file: str) -> exit:
-        logging.error(f"{colors.WARNINGRED}[FILE NOT FOUND]{colors.ENDC} NO FILE IN DIR NAMED -> {file}")
+    @staticmethod
+    def file_not_found(*args) -> exit:
+        for arg in args:
+            logging.error(f"{colors.WARNINGRED}[FILE NOT FOUND]{colors.ENDC} NO FILE IN DIR NAMED -> {arg}")
         exit()
 
+    @staticmethod
     def gpp_file_not_found(file: str) -> exit:
         logging.error(f"g++:{colors.WARNINGRED} error: {colors.ENDC}{file}: No such file found")
         exit()
@@ -189,6 +192,10 @@ def whole_input_check(
     if operator is None:
         return
 
+    def _check_file_real(*args) -> List[str]:
+        """Returns a list of files that are not in the working dir"""
+        return [arg for arg in args if not arg in os.listdir()]
+
     check_condition(
         operator == '/' and exitOperator == '/', 
         color=colors.WARNINGYELLOW, 
@@ -197,6 +204,9 @@ def whole_input_check(
     )
 
     check_condition(inputFile is not None and expectedFile is not None, msg=errors.NO_FILE)
+    missingFiles = _check_file_real(inputFile, expectedFile)
+    if len(missingFiles):
+        errors.file_not_found(missingFiles)
 
 
 def main(args: List[str]):
