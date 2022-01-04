@@ -104,7 +104,7 @@ def compair_output_vs_expected(programOutput: List[str], programExpected: List[s
 
     for i, mv in enumerate(missmatch):
         print(f"Found: {mv[0][:-1]} ~ Expected: {mv[1][:-1]} ~ Missmatch_On_Line: {mv[2]}")
-        if i >= len(missmatch) - 1: print('', flush=True)
+        if i >= len(missmatch) - 1: print('', end='\n', flush=True)
 
 
 def get_file_lines(fname: str) -> List[str]:
