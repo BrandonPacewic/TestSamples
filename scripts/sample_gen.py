@@ -37,18 +37,13 @@ def file_not_found(*args) -> exit:
 
 
 def do_files_exist(*args) -> bool:
-    # for arg in args:
-    #     if arg in os.listdir():
-    #         logging.info(f"{colors.WARNINGYELLOW}[WARNING]{colors.ENDC} Files with the name -> {arg} <- Already exist")
-    #         return True
-    # return False
     exist = [True if arg in os.listdir() else arg for arg in args]
     if all(exist):
         for arg in args:
-            logging.info(f"{colors.WARNINGYELLOW}[WARNING]{colors.ENDC} Files with the name -> {arg} <- Already exist")
-
+            logging.info(f"{colors.WARNINGYELLOW}[WARNING]{colors.ENDC} found existing file -> {arg}")
         check_condition(color=colors.WARNINGYELLOW, msg="[WORKING]", leave=False)
         return True
+    return False
     
 
 def create_files(file: str) -> None:
@@ -57,7 +52,7 @@ def create_files(file: str) -> None:
     os.system(f"touch {file}_expected.txt")
 
 
-def multi_input() -> None:
+def multi_input() -> List[str]:
     inputs = []
     while True:
         currentInput = f"{str(input())}\n"
@@ -84,28 +79,41 @@ def main(file: str):
     def _seperator(
         initalNewLine: bool = False, 
         endNewLine: bool = True,
-        ) -> None:
-        print(f"{'\n' if initalNewLine else ''}------------, end={'\n\n' if endNewLine else '\n'}")
+        dashCount: int = 5,
+    ) -> None:
+        def _print_args(*args, midend='', endmsg=None, finish='\n') -> None:
+            for arg in args:
+                print(arg, end=midend)
+            print(endmsg if endmsg is not None else '', end=finish)
+        
+        _print_args(
+            '\n' if initalNewLine else '', 
+            ''.join('-' for _ in range(dashCount)),
+            finish='\n\n' if endNewLine else '\n'
+            )
 
     def _set_input_file(file: str) -> None:
         print("[INPUT TEXT] Enter Input:")
+        _seperator(endNewLine=False, dashCount=14)
         inputLines = multi_input()
         write_lines(file, inputLines)
 
     def _set_expected_file(file: str) -> None:
-        _seperator()
+        _seperator(dashCount=14)
         print("[EXPECTED TEXT] Enter Expected")
+        _seperator(endNewLine=False, dashCount=14)
         inputLines = multi_input()
         write_lines(file, inputLines)
 
     correct_file_name = lambda file: file if file[-3:] != ".cc" else file[-3:]
     file = correct_file_name(file)
 
+    if not do_files_exist(f"{file}_input.txt", f"{file}_expected.txt"):
+        create_files(file)
 
-    create_files(file)
     _set_input_file(f"{file}_input.txt")
     _set_expected_file(f"{file}_expected.txt")
-    _seperator()
+    _seperator(dashCount=14)
     print(f"{colors.OKGREEN}[Accepted]\n")
 
 
