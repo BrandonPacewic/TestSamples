@@ -100,7 +100,7 @@ def compair_output_vs_expected(programOutput: List[str], programExpected: List[s
     _print_args(
         _assign_color(goodCount, len(programExpected)),
         goodCount,
-        '/',
+        " / ",
         len(programExpected),
         " Tests Passed",
         endmsg=colors.ENDC,
