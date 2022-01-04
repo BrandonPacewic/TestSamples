@@ -41,11 +41,11 @@ class errors:
 
 
 def check_condition(
-    condition=False, 
-    expect=True, 
-    color=colors.WARNINGRED, 
-    msg=None, 
-    leave=True,
+    condition: bool = False, 
+    expect: bool = True, 
+    color: str = colors.WARNINGRED, 
+    msg: str = None, 
+    leave: bool = True,
 ) -> Optional[exit]:
     """Template for basic console logging"""
     try:
