@@ -64,8 +64,10 @@ def compair_output_vs_expected(programOutput: List[str], programExpected: List[s
         goodCount = 0
         missmatch = []
         for lineNum, (priLine, secLine) in enumerate(zip(primaryLines, secondaryLines)):
-            if priLine == secLine: goodCount += 1
-            else: missmatch.append((priLine, secLine, lineNum + 1))
+            if priLine == secLine: 
+                goodCount += 1
+            else: 
+                missmatch.append((priLine, secLine, lineNum + 1))
         return goodCount, missmatch
 
     def _print_file_lines(lines: List[str]) -> None:
@@ -79,9 +81,12 @@ def compair_output_vs_expected(programOutput: List[str], programExpected: List[s
 
     def _assign_color(count: int, target: int) -> str:
         """For determining what msg color is needed"""
-        if count == 0: return colors.WARNINGRED
-        elif count < target: return colors.WARNINGYELLOW
-        else: return colors.OKGREEN
+        if count == 0: 
+            return colors.WARNINGRED
+        elif count < target: 
+            return colors.WARNINGYELLOW
+        else: 
+            return colors.OKGREEN
 
     print(f"{SEPARATOR}Expected:", end="\n\n")
     _print_file_lines(programExpected)
@@ -95,7 +100,7 @@ def compair_output_vs_expected(programOutput: List[str], programExpected: List[s
     _print_args(
         _assign_color(goodCount, len(programExpected)),
         goodCount,
-        " / ",
+        '/',
         len(programExpected),
         " Tests Passed",
         endmsg=colors.ENDC,
@@ -104,7 +109,7 @@ def compair_output_vs_expected(programOutput: List[str], programExpected: List[s
 
     for i, mv in enumerate(missmatch):
         print(f"Found: {mv[0][:-1]} ~ Expected: {mv[1][:-1]} ~ Missmatch_On_Line: {mv[2]}")
-        if i >= len(missmatch) - 1: print('', end='\n', flush=True)
+        if i >= len(missmatch) - 1: print('', flush=True)
 
 
 def get_file_lines(fname: str) -> List[str]:
@@ -134,7 +139,8 @@ def locate_target_line(fname: str, target: str) -> int:
         with open(fname, 'r') as file:
             lines = file.readlines()
             for i, line in enumerate(lines):
-                if line == target: return i
+                if line == target: 
+                    return i
     except:
         errors.file_not_found(fname)
     return None
