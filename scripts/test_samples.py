@@ -215,23 +215,23 @@ def main(**kwargs):
         format=f"{colors.WARNINGRED}[ERROR - %(asctime)s]{colors.ENDC} - %(message)s",
     )
 
-    check_condition(len(args) in range(1, 6), msg=errors.EXPECTED_ARGUMENTS)
-    file = args[0]
-    operator = args[1] if len(args) > 1 else None
-    inputFile = args[2] if len(args) > 2 else None
-    exitOperator = args[3] if len(args) > 3 else None
-    expectedFile = args[4] if len(args) > 4 else None
-
-    whole_input_check(operator, inputFile, exitOperator, expectedFile)
+    whole_input_check(
+        kwargs.get("operator"), 
+        kwargs.get("inputFile"), 
+        kwargs.get("exitOperator"), 
+        kwargs.get("expectedFile"),
+    )
 
     does_need_suffix = lambda file: file if file[-3:] == ".cc" else f"{file}.cc"
-    file = does_need_suffix(file)
+    file = does_need_suffix(kwargs.get("file"))
 
     def set_default(file: str) -> str:
         return f"{file[:-3]}_input.txt", f"{file[:-3]}_expected.txt"
 
-    if operator is None: 
+    if kwargs.get("operator") is None: 
         inputFile, expectedFile = set_default(file)
+    else:
+        inputFile, expectedFile = kwargs.get("inputFile"), kwargs.get("expectedFile")
 
     gpp_assert_file_in_dir(file)
     targetLine = locate_target_line(file, target="//dbg\n")
@@ -249,4 +249,11 @@ def main(**kwargs):
     compair_output_vs_expected(programOutput, get_file_lines(expectedFile))
 
 if __name__ == '__main__':
-    main(file=sys.argv[1], operator=sys.argv[2], inputFile=sys.argv[3], exitOperator=sys.argv[4], expectedFile=sys.argv[5])
+    check_condition(len(sys.argv) > 6, expect=False, msg="MAX OF 6 ARGUMENTS IS TO BE PROVIDED")
+    main(
+        file=sys.argv[1] if len(sys.argv) >= 2 else None, 
+        operator=sys.argv[2] if len(sys.argv) >= 3 else None, 
+        inputFile=sys.argv[3] if len(sys.argv) >= 4 else None, 
+        exitOperator=sys.argv[4] if len(sys.argv) >= 5 else None, 
+        expectedFile=sys.argv[5] if len(sys.argv) == 6 else None,
+    )
