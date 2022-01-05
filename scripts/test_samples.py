@@ -73,9 +73,9 @@ def compair_output_vs_expected(programOutput: List[str], programExpected: List[s
                 missmatch.append((priLine, secLine, lineNum + 1))
         return goodCount, missmatch
 
-    def _print_file_lines(lines: List[str]) -> None:
+    def _print_file_lines(lines: List[str], pend='') -> None:
         for line in lines:
-            print(line, end='')
+            print(line, end=pend)
 
     def _print_args(*args, midend='', endmsg=None, finish='\n') -> None:
         for arg in args:
@@ -215,7 +215,7 @@ def main(**kwargs):
         format=f"{colors.WARNINGRED}[ERROR - %(asctime)s]{colors.ENDC} - %(message)s",
     )
 
-    whole_input_check(
+    whole_input_check( # TODO: Add file is not None check
         kwargs.get("operator"), 
         kwargs.get("inputFile"), 
         kwargs.get("exitOperator"), 
