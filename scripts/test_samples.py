@@ -188,7 +188,7 @@ def whole_input_check(
     inputFile: str, 
     exitOperator: str, 
     expectedFile: str,
-) -> None:
+) -> Optional[exit]:
     if operator is None:
         return
 
