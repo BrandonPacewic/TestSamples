@@ -17,7 +17,7 @@ testsamples <filename>
 ```
 ##### Output
 
-__VA_ARGS__ is part of the previously mentioned debugging toold
+_VA_ARGS_ is part of the previously mentioned debugging tool
 
 ```shell
 __VA_ARGS__ (a - b): 0
