@@ -47,3 +47,35 @@ Found: 5 ~ Expected: 3 ~ Missmatch_On_Line: 2
 Found: 10 ~ Expected: 9 ~ Missmatch_On_Line: 3
 
 ```
+
+# Sample Gen
+
+Yet another python script for generating the sample .txt files used
+
+by the test samples script
+
+### Example
+
+```shell
+sample_gen <file name>
+```
+
+##### Input
+
+```shell
+[CREATEING FILES] With Base -> <file name>
+[INPUT TEXT] Enter Input:
+--------------
+<sample input>
+
+--------------
+
+[EXPECTED TEXT] Enter Expected
+--------------
+<sample input>
+
+--------------
+
+[Accepted]
+
+```
