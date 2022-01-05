@@ -144,7 +144,7 @@ def locate_target_line(fname: str, target: str) -> int:
             for i, line in enumerate(lines):
                 if line == target: 
                     return i
-    except:
+    except OSError:
         errors.file_not_found(fname)
     return None
 
@@ -164,7 +164,7 @@ def replace_line(fname: str, targetLine: int, replacementLine: str) -> None:
             lines[targetLine] = replacementLine
             _clear_file()
             file.writelines(lines)
-    except:
+    except OSError:
         errors.file_not_found(fname)
 
 
