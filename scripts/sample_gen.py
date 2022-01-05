@@ -37,7 +37,7 @@ def file_not_found(*args) -> exit:
 
 
 def do_files_exist(*args) -> bool:
-    exist = [True if arg in os.listdir() else arg for arg in args]
+    exist = [True if arg in os.listdir() else False for arg in args]
     if all(exist):
         for arg in args:
             logging.info(f"{colors.WARNINGYELLOW}[WARNING]{colors.ENDC} found existing file -> {arg}")
