@@ -2,7 +2,7 @@
 
 Python script for testing and validating competitive programming test cases
 
-Additionaly it defines macros in cc templates for debuging 
+Additionaly it defines macros in cc templates for debugging 
 
 It will compair the output of the program with the expected output of the problem statement
 
@@ -17,10 +17,12 @@ testsamples <filename>
 ```
 ##### Output
 
+__VA_ARGS__ is part of the previously mentioned debugging toold
+
 ```shell
-#0 __VA_ARGS__ (a - b): 0
-#1 __VA_ARGS__ (a - b): -1
-#2 __VA_ARGS__ (a - b): 0
+__VA_ARGS__ (a - b): 0
+__VA_ARGS__ (a - b): -1
+__VA_ARGS__ (a - b): 0
 Compairing...
 Time: 0.004s
 -------------
