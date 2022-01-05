@@ -209,7 +209,7 @@ def whole_input_check(
         errors.file_not_found(missingFiles)
 
 
-def main(args: List[str]):
+def main(**kwargs):
     logging.basicConfig(
         level=logging.DEBUG, 
         format=f"{colors.WARNINGRED}[ERROR - %(asctime)s]{colors.ENDC} - %(message)s",
@@ -249,4 +249,4 @@ def main(args: List[str]):
     compair_output_vs_expected(programOutput, get_file_lines(expectedFile))
 
 if __name__ == '__main__':
-    main(sys.argv[1:])
+    main(file=sys.argv[1], operator=sys.argv[2], inputFile=sys.argv[3], exitOperator=sys.argv[4], expectedFile=sys.argv[5])
