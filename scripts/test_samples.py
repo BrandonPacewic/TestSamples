@@ -2,7 +2,7 @@
 # usage testsamples <filename> (with or without .cc extension)
 
 
-from typing import List, Optional, Any
+from typing import List, Optional, Any, Exit
 from subprocess import Popen, PIPE
 import sys
 import os
@@ -29,13 +29,13 @@ class errors:
     NO_TARGET_LINE = f"[COULD NOT FIND TARGET LINE]{colors.ENDC} -> None"
 
     @staticmethod
-    def file_not_found(*args) -> exit:
+    def file_not_found(*args) -> Exit:
         for arg in args:
             logging.error(f"{colors.WARNINGRED}[FILE NOT FOUND]{colors.ENDC} NO FILE IN DIR NAMED -> {arg}")
         exit()
 
     @staticmethod
-    def gpp_file_not_found(file: str) -> exit:
+    def gpp_file_not_found(file: str) -> Exit:
         logging.error(f"g++:{colors.WARNINGRED} error: {colors.ENDC}{file}: No such file found")
         exit()
 
@@ -46,7 +46,7 @@ def check_condition(
     color: str = colors.WARNINGRED, 
     msg: str = None, 
     leave: bool = True,
-) -> Optional[exit]:
+) -> Optional[Exit]:
     """Template for basic console logging"""
     try:
         assert(condition is expect)
@@ -188,7 +188,7 @@ def whole_input_check(
     inputFile: str, 
     exitOperator: str, 
     expectedFile: str,
-) -> Optional[exit]:
+) -> Optional[Exit]:
     if operator is None:
         return
 
