@@ -105,7 +105,7 @@ def main(file: str):
         inputLines = multi_input()
         write_lines(file, inputLines)
 
-    correct_file_name = lambda file: file if file[-3:] != ".cc" else file[-3:]
+    correct_file_name = lambda file: file if file[-3:] != ".cc" else file[:-3]
     file = correct_file_name(file)
 
     if not do_files_exist(f"{file}_input.txt", f"{file}_expected.txt"):
