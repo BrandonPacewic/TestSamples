@@ -10,7 +10,6 @@ import time
 import logging
 
 
-MAX_LINE_CHECK = 30
 SEPARATOR = "-------------\n"
 
 
