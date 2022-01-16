@@ -45,8 +45,8 @@ Output:
 
 1 / 3 Tests Passed
 
-Found: 5 ~ Expected: 3 ~ Missmatch_On_Line: 2
-Found: 10 ~ Expected: 9 ~ Missmatch_On_Line: 3
+Found: 5 ~ Expected: 3 ~ MissmatchOnLine: 2
+Found: 10 ~ Expected: 9 ~ MissmatchOnLine: 3
 
 ```
 
