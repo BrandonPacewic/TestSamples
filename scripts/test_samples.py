@@ -183,11 +183,14 @@ def cpp_program_interact(lines: List[str]) -> List[str]:
 
 
 def whole_input_check(
-    operator: str, 
-    inputFile: str, 
-    exitOperator: str, 
-    expectedFile: str,
+    file: str = None,
+    operator: str = None, 
+    inputFile: str = None, 
+    exitOperator: str = None, 
+    expectedFile: str = None,
 ) -> Optional[exit]:
+    check_condition(file is not None, msg=errors.NO_FILE)
+
     if operator is None:
         return
 
@@ -214,7 +217,8 @@ def main(**kwargs):
         format=f"{colors.WARNINGRED}[ERROR - %(asctime)s]{colors.ENDC} - %(message)s",
     )
 
-    whole_input_check( # TODO: Add file is not None check
+    whole_input_check(
+        kwargs.get("file"),
         kwargs.get("operator"), 
         kwargs.get("inputFile"), 
         kwargs.get("exitOperator"), 
@@ -246,6 +250,7 @@ def main(**kwargs):
     print("Compairing...")
     print(f"Time: {get_tic_elapsed(tics)}s")
     compair_output_vs_expected(programOutput, get_file_lines(expectedFile))
+
 
 if __name__ == '__main__':
     check_condition(len(sys.argv) > 6, expect=False, msg="MAX OF 6 ARGUMENTS IS TO BE PROVIDED")
