@@ -1,5 +1,7 @@
 # Test Samples
 
+----
+
 Python script for testing and validating competitive programming test cases
 
 Additionaly it defines macros in cc templates for debugging 
@@ -43,12 +45,14 @@ Output:
 
 1 / 3 Tests Passed
 
-Found: 5 ~ Expected: 3 ~ Missmatch_On_Line: 2
-Found: 10 ~ Expected: 9 ~ Missmatch_On_Line: 3
+Found: 5 ~ Expected: 3 ~ MissmatchOnLine: 2
+Found: 10 ~ Expected: 9 ~ MissmatchOnLine: 3
 
 ```
 
 # Sample Gen
+
+----
 
 Yet another python script for generating the sample .txt files used
 
@@ -79,3 +83,16 @@ sample_gen <file name>
 [Accepted]
 
 ```
+
+### Install
+
+----
+
+For your convenience there is a install script that will create the global commands for you
+
+```
+chmod +x INSTALL.sh
+sudo ./INSTALL.sh
+```
+
+And enjoy :)
