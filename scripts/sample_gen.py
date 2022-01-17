@@ -21,7 +21,7 @@ def check_condition(
     color: str = colors.WARNINGRED, 
     msg: str = None, 
     leave: bool = True,
-) -> Optional[exit]:
+) -> None:
     """Template for basic console logging"""
     try:
         assert(condition is expect)
@@ -30,7 +30,7 @@ def check_condition(
         exit() if leave else print(f"{colors.WARNINGYELLOW}[WORKING]{colors.ENDC}")
 
 
-def file_not_found(*args) -> exit:
+def file_not_found(*args) -> None:
     for arg in args:
         logging.error(f"{colors.WARNINGRED}[FILE NOT FOUND]{colors.ENDC} NO FILE IN DIR NAMED -> {arg}")
     exit()
