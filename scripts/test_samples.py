@@ -1,6 +1,4 @@
 #! /usr/bin/python3
-# usage testsamples <filename> (with or without .cc extension)
-
 
 from typing import List, Optional, Any, Tuple
 from subprocess import Popen, PIPE
