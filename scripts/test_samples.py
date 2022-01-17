@@ -146,6 +146,7 @@ def locate_target_line(fname: str, target: str) -> Optional[int]:
                     return i
     except OSError:
         errors.file_not_found(fname)
+    
     return None
 
 
