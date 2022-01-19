@@ -9,7 +9,7 @@ import logging
 
 
 SEPARATOR = "-------------\n"
-DBG_DEF = "DEBUG_MODE"
+DBG_DEF = "DBG_MODE"
 
 
 class colors:
@@ -149,25 +149,6 @@ def locate_target_line(fname: str, target: str) -> Optional[int]:
     return None
 
 
-def replace_line(fname: str, targetLine: int, replacementLine: str) -> None:
-    if targetLine is None:
-        check_condition(color=colors.WARNINGYELLOW, msg=errors.NO_TARGET_LINE, leave=False)
-        return
-
-    def _clear_file() -> None:
-        file.truncate(0)
-        file.seek(0)
-
-    try:
-        with open(fname, 'r+') as file:
-            lines = file.readlines()
-            lines[targetLine] = replacementLine
-            _clear_file()
-            file.writelines(lines)
-    except OSError:
-        errors.file_not_found(fname)
-
-
 def gpp_assert_file_in_dir(fname: str) -> None:
     try:
         assert(fname in os.listdir())
@@ -238,11 +219,13 @@ def main(**kwargs):
         inputFile, expectedFile = kwargs.get("inputFile"), kwargs.get("expectedFile")
 
     gpp_assert_file_in_dir(file)
-    targetLine = locate_target_line(file, target="//dbg\n")
 
-    replace_line(file, targetLine, replacementLine="#define DBG_MODE\n")
+    """Looking for debug template"""
+    targetLine = locate_target_line(file, target="//dbg\n")
+    check_condition(targetLine is not None, color=colors.WARNINGYELLOW, msg=errors.NO_TARGET_LINE, leave=False)
+    del targetLine
+
     os.system(f"g++ -g -std=c++17 -Wall -D{DBG_DEF} {file}")
-    replace_line(file, targetLine, replacementLine="//dbg\n")
 
     tics = start_tics()
     programOutput = cpp_program_interact(get_file_lines(inputFile))
