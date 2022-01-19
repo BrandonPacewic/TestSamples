@@ -9,6 +9,7 @@ import logging
 
 
 SEPARATOR = "-------------\n"
+DBG_DEF = "DEBUG_MODE"
 
 
 class colors:
@@ -240,7 +241,7 @@ def main(**kwargs):
     targetLine = locate_target_line(file, target="//dbg\n")
 
     replace_line(file, targetLine, replacementLine="#define DBG_MODE\n")
-    os.system(f"g++ {file}")
+    os.system(f"g++ -g -std=c++17 -Wall -D{DBG_DEF} {file}")
     replace_line(file, targetLine, replacementLine="//dbg\n")
 
     tics = start_tics()
