@@ -1,15 +1,17 @@
 #! /usr/bin/python3
 
-from typing import List, Optional, Any, Tuple
 from subprocess import Popen, PIPE
-import sys
-import os
-import time
+from typing import List, Optional, Any, Tuple
+
+import argparse
 import logging
+import os
+import sys
+import time
 
 
-SEPARATOR = "-------------\n"
-DBG_DEF = "DBG_MODE"
+SEPARATOR = '-------------\n'
+DBG_DEF = 'DBG_MODE'
 
 
 class colors:
@@ -20,21 +22,21 @@ class colors:
 
 
 class errors:
-    EXPECTED_ARGUMENTS = "[EXPECTED ONE ARGUMENTS]"
-    INVALID_OPPERATOR = "[INVALID OPPERATOR FOUND]"
-    NO_FILE = "[EXPECTED FILE FOUND NONE]"
-    LEN_MISSMATCH = "[LINE LENGTH MISSMATCH]"
-    NO_TARGET_LINE = f"[COULD NOT FIND TARGET LINE]{colors.ENDC} -> None"
+    EXPECTED_ARGUMENTS = '[EXPECTED ONE ARGUMENTS]'
+    INVALID_OPPERATOR = '[INVALID OPPERATOR FOUND]'
+    NO_FILE = '[EXPECTED FILE FOUND NONE]'
+    LEN_MISSMATCH = '[LINE LENGTH MISSMATCH]'
+    NO_TARGET_LINE = f'[COULD NOT FIND TARGET LINE]{colors.ENDC} -> None'
 
     @staticmethod
     def file_not_found(*args) -> None:
         for arg in args:
-            logging.error(f"{colors.WARNINGRED}[FILE NOT FOUND]{colors.ENDC} NO FILE IN DIR NAMED -> {arg}")
+            logging.error(f'{colors.WARNINGRED}[FILE NOT FOUND]{colors.ENDC} NO FILE IN DIR NAMED -> {arg}')
         exit()
 
     @staticmethod
     def gpp_file_not_found(file: str) -> None:
-        logging.error(f"g++:{colors.WARNINGRED} error: {colors.ENDC}{file}: No such file found")
+        logging.error(f'g++:{colors.WARNINGRED} error: {colors.ENDC}{file}: No such file found')
         exit()
 
 
@@ -49,8 +51,8 @@ def check_condition(
     try:
         assert(condition is expect)
     except AssertionError:
-        logging.error(f"{color}{msg}{colors.ENDC}")
-        exit() if leave else print(f"{colors.WARNINGYELLOW}[WORKING]{colors.ENDC}")
+        logging.error(f'{color}{msg}{colors.ENDC}')
+        exit() if leave else print(f'{colors.WARNINGYELLOW}[WORKING]{colors.ENDC}')
 
 
 def compair_output_vs_expected(programOutput: List[str], programExpected: List[str]) -> None:
@@ -89,27 +91,27 @@ def compair_output_vs_expected(programOutput: List[str], programExpected: List[s
         else: 
             return colors.OKGREEN
 
-    print(f"{SEPARATOR}Expected:", end="\n\n")
+    print(f'{SEPARATOR}Expected:', end='\n\n')
     _print_file_lines(programExpected)
 
-    print(f"\n{SEPARATOR}Output:", end="\n\n")
+    print(f'\n{SEPARATOR}Output:', end='\n\n')
     _print_file_lines(programOutput)
 
     goodCount, missmatch = _compair_lines(programOutput, programExpected)
 
-    print(f"\n{SEPARATOR}")
+    print(f'\n{SEPARATOR}')
     _print_args(
         _assign_color(goodCount, len(programExpected)),
         goodCount,
-        " / ",
+        ' / ',
         len(programExpected),
-        " Tests Passed",
+        ' Tests Passed',
         endmsg=colors.ENDC,
         finish='\n\n',
     )
 
     for i, mv in enumerate(missmatch):
-        print(f"Found: {mv[0][:-1]} ~ Expected: {mv[1][:-1]} ~ MissmatchOnLine: {mv[2]}")
+        print(f'Found: {mv[0][:-1]} ~ Expected: {mv[1][:-1]} ~ Line: {mv[2]}')
         if i >= len(missmatch) - 1: print('', flush=True)
 
 
@@ -132,8 +134,8 @@ def add_tic(tics: List[float]) -> None:
 
 
 def get_tic_elapsed(tics: List[int]) -> str:
-    check_condition(len(tics) >= 2, msg="[ELAPSED IS NULL]")
-    return str("{:.3f}".format(tics[-1] - tics[-2])) 
+    check_condition(len(tics) >= 2, msg='[ELAPSED IS NULL]')
+    return str('{:.3f}'.format(tics[-1] - tics[-2])) 
 
 
 def locate_target_line(fname: str, target: str) -> Optional[int]:
@@ -157,7 +159,7 @@ def gpp_assert_file_in_dir(fname: str) -> None:
 
 
 def cpp_program_interact(lines: List[str]) -> List[str]:
-    program = Popen([f"{os.getcwd()}/a.out"], stdout=PIPE, stdin=PIPE)
+    program = Popen([f'{os.getcwd()}/a.out'], stdout=PIPE, stdin=PIPE)
     for line in lines:
         program.stdin.write(line.encode('utf-8'))
     program.stdin.flush()
@@ -193,55 +195,78 @@ def whole_input_check(
         errors.file_not_found(missingFiles)
 
 
-def main(**kwargs):
+def main():
     logging.basicConfig(
         level=logging.DEBUG, 
-        format=f"{colors.WARNINGRED}[ERROR - %(asctime)s]{colors.ENDC} - %(message)s",
+        format=f'{colors.WARNINGRED}[ERROR - %(asctime)s]{colors.ENDC} - %(message)s',
     )
+
+    """Argument Parse"""
+    parser = argparse.ArgumentParser()
+    parser.add_argument('sourcefile', 
+        type=str, help='cc file that you want to test',
+    )
+    parser.add_argument('inputoperator',
+        default=None, type=str,
+        help='seperator between source file and input file',
+    )
+    parser.add_argument('inputfile',
+        default=None, type=str,
+        help='input file for cc program',
+    )
+    parser.add_argument('exitoperator',
+        default=None, type=str,
+        help='seperator between input file and expected file',
+    )
+    parser.add_argument('expectedfile',
+        default=None, type=str,
+        help='expected file for cc program output',
+    )
+
+    args = parser.parse_args()
+    file = args.sourcefile
+    inputOperator = args.inputoperator
+    inputFile = args.inputfile
+    exitOperator = args.exitoperator
+    expectedFile = args.expectedfile
 
     whole_input_check(
-        kwargs.get("file"),
-        kwargs.get("operator"), 
-        kwargs.get("inputFile"), 
-        kwargs.get("exitOperator"), 
-        kwargs.get("expectedFile"),
+        file,
+        inputOperator,
+        inputFile,
+        exitOperator,
+        expectedFile,
     )
 
-    does_need_suffix = lambda file: file if file[-3:] == ".cc" else f"{file}.cc"
-    file = does_need_suffix(kwargs.get("file"))
+    """Add suffix"""
+    if file[-3:] != '.cc':
+        file += '.cc'
 
-    def set_default(file: str) -> Tuple[str, str]:
-        return f"{file[:-3]}_input.txt", f"{file[:-3]}_expected.txt"
+    def _set_default(file: str) -> Tuple[str, str]:
+        return f'{file.split(".")[0]}_input.txt', f'{file.split(".")[0]}_expected.txt'
 
-    if kwargs.get("operator") is None: 
-        inputFile, expectedFile = set_default(file)
-    else:
-        inputFile, expectedFile = kwargs.get("inputFile"), kwargs.get("expectedFile")
+    if inputOperator is None: 
+        inputFile, expectedFile = _set_default(file)
 
     gpp_assert_file_in_dir(file)
 
     """Looking for debug template"""
-    targetLine = locate_target_line(file, target="//dbg\n")
-    check_condition(targetLine is not None, color=colors.WARNINGYELLOW, msg=errors.NO_TARGET_LINE, leave=False)
+    targetLine = locate_target_line(file, target='//dbg\n')
+    check_condition(targetLine is not None, color=colors.WARNINGYELLOW, 
+        msg=errors.NO_TARGET_LINE, leave=False,
+    )
     del targetLine
 
-    os.system(f"g++ -g -std=c++17 -Wall -D{DBG_DEF} {file}")
+    os.system(f'g++ -g -std=c++17 -Wall -D{DBG_DEF} {file}')
 
     tics = start_tics()
     programOutput = cpp_program_interact(get_file_lines(inputFile))
     add_tic(tics)
 
-    print("Compairing...")
-    print(f"Time: {get_tic_elapsed(tics)}s")
+    print('Compairing...')
+    print(f'Time: {get_tic_elapsed(tics)}s')
     compair_output_vs_expected(programOutput, get_file_lines(expectedFile))
 
 
 if __name__ == '__main__':
-    check_condition(len(sys.argv) > 6, expect=False, msg="MAX OF 6 ARGUMENTS IS TO BE PROVIDED")
-    main(
-        file=sys.argv[1] if len(sys.argv) >= 2 else None, 
-        operator=sys.argv[2] if len(sys.argv) >= 3 else None, 
-        inputFile=sys.argv[3] if len(sys.argv) >= 4 else None, 
-        exitOperator=sys.argv[4] if len(sys.argv) >= 5 else None, 
-        expectedFile=sys.argv[5] if len(sys.argv) == 6 else None,
-    )
+    main()
