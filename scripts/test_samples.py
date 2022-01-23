@@ -206,19 +206,19 @@ def main():
         type=str, help='cc file that you want to test',
     )
     parser.add_argument('inputoperator',
-        default=None, type=str,
+        default=None, type=str, required=False,
         help='seperator between source file and input file',
     )
     parser.add_argument('inputfile',
-        default=None, type=str,
+        default=None, type=str, required=False,
         help='input file for cc program',
     )
     parser.add_argument('exitoperator',
-        default=None, type=str,
+        default=None, type=str, required=False,
         help='seperator between input file and expected file',
     )
     parser.add_argument('expectedfile',
-        default=None, type=str,
+        default=None, type=str, required=False,
         help='expected file for cc program output',
     )
 
