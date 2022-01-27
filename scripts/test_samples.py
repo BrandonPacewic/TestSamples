@@ -202,32 +202,14 @@ def main():
 
     """Argument Parse"""
     parser = argparse.ArgumentParser()
-    parser.add_argument('sourcefile', 
-        type=str, help='cc file that you want to test',
-    )
-    parser.add_argument('inputoperator',
-        default=None, type=str,
-        help='seperator between source file and input file',
-    )
-    parser.add_argument('inputfile',
-        default=None, type=str,
-        help='input file for cc program',
-    )
-    parser.add_argument('exitoperator',
-        default=None, type=str,
-        help='seperator between input file and expected file',
-    )
-    parser.add_argument('expectedfile',
-        default=None, type=str,
-        help='expected file for cc program output',
-    )
-
+    parser.add_argument('input', type=str, metavar='N', nargs='+')
     args = parser.parse_args()
-    file = args.sourcefile
-    inputOperator = args.inputoperator
-    inputFile = args.inputfile
-    exitOperator = args.exitoperator
-    expectedFile = args.expectedfile
+
+    file = args.input[0]
+    inputOperator = args.input[1] if len(args.input) > 1 else None
+    inputFile = args.input[2] if len(args.input) > 2 else None
+    exitOperator = args.input[3] if len(args.input) > 3 else None
+    expectedFile = args.input[4] if len(args.input) > 4 else None
 
     whole_input_check(
         file,
