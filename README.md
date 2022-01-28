@@ -19,34 +19,24 @@ testsamples <filename>
 ```
 ##### Output
 
-_VA_ARGS_ is part of the previously mentioned debugging tool
-
-```shell
-__VA_ARGS__ (a - b): 0
-__VA_ARGS__ (a - b): -1
-__VA_ARGS__ (a - b): 0
+```
+#0 [A - B, A * B]: -4 5
 Compairing...
-Time: 0.004s
+Time: 0.003s
 -------------
 Expected:
 
-4
-3
-9
-
+10
 -------------
 Output:
 
-4
-5
-10
+6
 
 -------------
 
-1 / 3 Tests Passed
+0 / 1 Tests Passed
 
-Found: 5 ~ Expected: 3 ~ MissmatchOnLine: 2
-Found: 10 ~ Expected: 9 ~ MissmatchOnLine: 3
+Found: 6 ~ Expected: 1 ~ MissmatchOnLine: 1
 
 ```
 
@@ -66,7 +56,7 @@ sample_gen <file name>
 
 ##### Input
 
-```shell
+```
 [CREATEING FILES] With Base -> <file name>
 [INPUT TEXT] Enter Input:
 --------------
@@ -91,7 +81,6 @@ sample_gen <file name>
 For your convenience there is a install script that will create the global commands for you
 
 ```
-chmod +x INSTALL.sh
 sudo ./INSTALL.sh
 ```
 
