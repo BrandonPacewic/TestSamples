@@ -172,14 +172,14 @@ def whole_input_check(
     exitOperator: str = None, 
     expectedFile: str = None,
 ) -> None:
+    def _check_file_real(*args) -> List[str]:
+        """Returns a list of files that are not in the working dir"""
+        return [arg for arg in args if not arg in os.listdir()]
+
     check_condition(file is not None, msg=errors.NO_FILE)
 
     if operator is None:
         return
-
-    def _check_file_real(*args) -> List[str]:
-        """Returns a list of files that are not in the working dir"""
-        return [arg for arg in args if not arg in os.listdir()]
 
     check_condition(
         operator == '/' and exitOperator == '/', 
