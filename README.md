@@ -8,7 +8,8 @@ Additionaly it defines macros in cc templates for debugging
 
 It will compair the output of the program with the expected output of the problem statement
 
-This script will only work with specific cc program file templates
+This script will only work with specific cc program file templates 
+examples can be found [Here](https://github.com/BrandonPacewic/CompetitiveProgramming/tree/master/templates)
 
 ### Example
 
