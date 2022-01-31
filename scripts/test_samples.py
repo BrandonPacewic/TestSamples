@@ -39,6 +39,17 @@ class errors:
         exit()
 
 
+class timer:
+    def __init__(self):
+        self.tics = [time.perf_counter()]
+
+    def add_tic(self):
+        self.tics.append(time.perf_counter())
+
+    def get_elapsed(self):
+        pass
+
+
 def check_condition(
     condition: bool = False, 
     expect: bool = True, 
