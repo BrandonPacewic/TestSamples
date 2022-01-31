@@ -8,10 +8,19 @@ import logging
 import os
 import time
 
-
-SEPARATOR = '-------------\n'
 DBG_DEF = 'DBG_MODE'
 
+
+"""Should be added to a new custom modual"""
+def separator(
+    *args, 
+    type: str, 
+    length: int, 
+    semi: bool = True, 
+    startNew: bool = True, 
+    endNew: bool = True,
+    ) -> None:
+    pass
 
 class colors:
     OKGREEN = '\033[92m'
@@ -38,6 +47,21 @@ class errors:
         logging.error(f'g++:{colors.WARNINGRED} error: {colors.ENDC}{file}: No such file found')
         exit()
 
+    """Template for basic console logging"""
+    @staticmethod
+    def check_condition(
+        condition: bool = False, 
+        expect: bool = True, 
+        color: str = colors.WARNINGRED, 
+        msg: str = None, 
+        leave: bool = True,
+    ) -> None:
+        try:
+            assert(condition is expect)
+        except AssertionError:
+            logging.error(f'{color}{msg}{colors.ENDC}')
+            exit() if leave else print(f'{colors.WARNINGYELLOW}[WORKING]{colors.ENDC}')
+
 
 class timer:
     """Errors"""
@@ -57,19 +81,6 @@ class timer:
         return str('{:.3f}'.format(self.tics[-1] - self.tics[-2]))
 
 
-def check_condition(
-    condition: bool = False, 
-    expect: bool = True, 
-    color: str = colors.WARNINGRED, 
-    msg: str = None, 
-    leave: bool = True,
-) -> None:
-    """Template for basic console logging"""
-    try:
-        assert(condition is expect)
-    except AssertionError:
-        logging.error(f'{color}{msg}{colors.ENDC}')
-        exit() if leave else print(f'{colors.WARNINGYELLOW}[WORKING]{colors.ENDC}')
 
 
 def compair_output_vs_expected(programOutput: List[str], programExpected: List[str]) -> None:
@@ -104,7 +115,7 @@ def compair_output_vs_expected(programOutput: List[str], programExpected: List[s
         else: 
             return colors.OKGREEN
 
-    check_condition(
+    errors.check_condition(
         len(programOutput) == len(programOutput), 
         color=colors.WARNINGYELLOW, 
         msg=errors.LEN_MISSMATCH, 
@@ -159,19 +170,20 @@ def locate_target_line(fname: str, target: str) -> Optional[int]:
     
     return None
 
+def cpp_program_interact(lines: List[str], file: str) -> List[str]:
+    def _gpp_assert_file_in_dir(fname: str) -> None:
+        try:
+            assert(fname in os.listdir())
+        except AssertionError:
+            errors.gpp_file_not_found(fname)
 
-def gpp_assert_file_in_dir(fname: str) -> None:
-    try:
-        assert(fname in os.listdir())
-    except AssertionError:
-        errors.gpp_file_not_found(fname)
+    os.system(f'g++ -g -std=c++17 -Wall -D{DBG_DEF} {file}')
 
-
-def cpp_program_interact(lines: List[str]) -> List[str]:
     program = Popen([f'{os.getcwd()}/a.out'], stdout=PIPE, stdin=PIPE)
     for line in lines:
         program.stdin.write(line.encode('utf-8'))
     program.stdin.flush()
+
     return [line.decode() for line in program.stdout.readlines()]
 
 
@@ -186,19 +198,19 @@ def whole_input_check(
         """Returns a list of files that are not in the working dir"""
         return [arg for arg in args if not arg in os.listdir()]
 
-    check_condition(file is not None, msg=errors.NO_FILE)
+    errors.check_condition(file is not None, msg=errors.NO_FILE)
 
     if operator is None:
         return
 
-    check_condition(
+    errors.check_condition(
         operator == '/' and exitOperator == '/', 
         color=colors.WARNINGYELLOW, 
         msg=errors.INVALID_OPPERATOR, 
         leave=False,
     )
 
-    check_condition(inputFile is not None and expectedFile is not None, msg=errors.NO_FILE)
+    errors.check_condition(inputFile is not None and expectedFile is not None, msg=errors.NO_FILE)
     missingFiles = _check_file_real(inputFile, expectedFile)
     if len(missingFiles):
         errors.file_not_found(missingFiles)
@@ -233,30 +245,29 @@ def main():
     if file[-3:] != '.cc':
         file += '.cc'
 
-    def _set_default(file: str) -> Tuple[str, str]:
-        return f'{file.split(".")[0]}_input.txt', f'{file.split(".")[0]}_expected.txt'
-
+    """Set to default"""
     if inputOperator is None: 
-        inputFile, expectedFile = _set_default(file)
-
-    gpp_assert_file_in_dir(file)
+        inputFile, expectedFile = f'{file[:-3]}_input.txt', f'{file[:-3]}_expected.txt'
 
     """Looking for debug template"""
-    targetLine = locate_target_line(file, target='//dbg\n')
-    check_condition(targetLine is not None, color=colors.WARNINGYELLOW, 
+    errors.check_condition(
+        locate_target_line(file, target='//dbg\n') is not None, 
+        color=colors.WARNINGYELLOW, 
         msg=errors.NO_TARGET_LINE, leave=False,
     )
-    del targetLine
 
-    os.system(f'g++ -g -std=c++17 -Wall -D{DBG_DEF} {file}')
-
+    """Running"""
     tics = timer()
-    programOutput = cpp_program_interact(get_file_lines(inputFile))
+    programOutput = cpp_program_interact(get_file_lines(inputFile), file)
     tics.add_tic()
 
+    """Program output"""
     print('Compairing...')
     print(f'Time: {tics.get_elapsed()}s')
-    compair_output_vs_expected(programOutput, get_file_lines(expectedFile))
+    compair_output_vs_expected(
+        programOutput, 
+        get_file_lines(expectedFile)
+    )
 
 
 if __name__ == '__main__':
