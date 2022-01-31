@@ -40,14 +40,21 @@ class errors:
 
 
 class timer:
+    """Errors"""
+    NO_ELAPSED = 'Elapsed is null'
+
     def __init__(self):
         self.tics = [time.perf_counter()]
 
-    def add_tic(self):
+    def add_tic(self) -> None:
         self.tics.append(time.perf_counter())
 
-    def get_elapsed(self):
-        pass
+    def get_elapsed(self) -> str:
+        if len(self.tics) < 1:
+            print(NO_ELAPSED)
+            exit()
+
+        return str('{:.3f}'.format(self.tics[-1] - self.tics[-2]))
 
 
 def check_condition(
@@ -133,19 +140,6 @@ def get_file_lines(fname: str) -> List[str]:
         errors.file_not_found(fname)
 
     return lines
-
-
-def start_tics() -> List[float]:
-    return [time.perf_counter()]
-
-
-def add_tic(tics: List[float]) -> None:
-    tics.append(time.perf_counter())
-
-
-def get_tic_elapsed(tics: List[int]) -> str:
-    check_condition(len(tics) >= 2, msg='[ELAPSED IS NULL]')
-    return str('{:.3f}'.format(tics[-1] - tics[-2])) 
 
 
 def locate_target_line(fname: str, target: str) -> Optional[int]:
@@ -251,12 +245,12 @@ def main():
 
     os.system(f'g++ -g -std=c++17 -Wall -D{DBG_DEF} {file}')
 
-    tics = start_tics()
+    tics = timer()
     programOutput = cpp_program_interact(get_file_lines(inputFile))
-    add_tic(tics)
+    tics.add_tic()
 
     print('Compairing...')
-    print(f'Time: {get_tic_elapsed(tics)}s')
+    print(f'Time: {tics.get_elapsed()}s')
     compair_output_vs_expected(programOutput, get_file_lines(expectedFile))
 
 
