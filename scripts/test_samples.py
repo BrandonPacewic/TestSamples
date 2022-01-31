@@ -73,14 +73,10 @@ def check_condition(
 
 
 def compair_output_vs_expected(programOutput: List[str], programExpected: List[str]) -> None:
-    check_condition(
-        len(programOutput) == len(programOutput), 
-        color=colors.WARNINGYELLOW, 
-        msg=errors.LEN_MISSMATCH, 
-        leave=False,
-    )
-
-    def _compair_lines(primaryLines: List[str], secondaryLines: List[str]) -> Any:
+    def _compair_lines(
+        primaryLines: List[str], 
+        secondaryLines: List[str]
+    ) -> Tuple[int, List[Tuple[str, str, int]]]:
         goodCount = 0
         missmatch = []
         for lineNum, (priLine, secLine) in enumerate(zip(primaryLines, secondaryLines)):
@@ -107,6 +103,13 @@ def compair_output_vs_expected(programOutput: List[str], programExpected: List[s
             return colors.WARNINGYELLOW
         else: 
             return colors.OKGREEN
+
+    check_condition(
+        len(programOutput) == len(programOutput), 
+        color=colors.WARNINGYELLOW, 
+        msg=errors.LEN_MISSMATCH, 
+        leave=False,
+    )
 
     print(f'{SEPARATOR}Expected:', end='\n\n')
     _print_file_lines(programExpected)
