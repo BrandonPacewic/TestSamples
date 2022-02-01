@@ -13,7 +13,8 @@ DBG_DEF = 'DBG_MODE'
 
 """Should be added to a new custom modual"""
 def separator(
-    *args, 
+    *values: Optional[object],
+    sep: Optional[str] = ' ', 
     symbol: str, 
     length: int, 
     semi: bool = True, 
@@ -21,11 +22,21 @@ def separator(
     endNew: bool = True,
     ) -> None:
     if startNew:
-        print(flush=False, end='')
+        print(end='\n', flush=False)
 
-    for i in range length:
-        print(symbol, flush=False, end='')
+    for i in range(length):
+        print(symbol, end='', flush=False)
 
+    if semi:
+        print(':', end='', flush=False)
+
+    if endNew:
+        print(end='\n', flush=False)
+
+    for arg in values:
+        print(arg, end=sep, flush=False)
+
+    print(end='\n', flush=True)
 
 
 class colors:
@@ -70,9 +81,6 @@ class errors:
 
 
 class timer:
-    """Errors"""
-    NO_ELAPSED = 'Elapsed is null'
-
     def __init__(self):
         self.tics = [time.perf_counter()]
 
@@ -80,12 +88,11 @@ class timer:
         self.tics.append(time.perf_counter())
 
     def get_elapsed(self) -> str:
-        if len(self.tics) < 1:
-            print(NO_ELAPSED)
+        try:
+            return str('{:.3f}'.format(self.tics[-1] - self.tics[-2]))
+        except IndexError:
+            print('Elapsed is null')
             exit()
-
-        return str('{:.3f}'.format(self.tics[-1] - self.tics[-2]))
-
 
 def compair_output_vs_expected(programOutput: List[str], programExpected: List[str]) -> None:
     def _compair_lines(
@@ -126,15 +133,34 @@ def compair_output_vs_expected(programOutput: List[str], programExpected: List[s
         leave=False,
     )
 
-    print(f'{SEPARATOR}Expected:', end='\n\n')
+    separator(
+        'Expected:',
+        sep='',
+        symbol='-',
+        length=14,
+        semi=False,
+        startNew=False,
+    )
     _print_file_lines(programExpected)
 
-    print(f'\n{SEPARATOR}Output:', end='\n\n')
+
+    separator(
+        'Output:',
+        sep='',
+        symbol='-',
+        length=14,
+        semi=False,
+    )
     _print_file_lines(programOutput)
 
     goodCount, missmatch = _compair_lines(programOutput, programExpected)
 
-    print(f'\n{SEPARATOR}')
+    separator(
+        sep='',
+        symbol='-',
+        length=14,
+        semi=False,
+    )
     _print_args(
         _assign_color(goodCount, len(programExpected)),
         goodCount,
