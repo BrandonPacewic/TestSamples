@@ -15,8 +15,8 @@ DBG_DEF = 'DBG_MODE'
 def separator(
     *values: Optional[object],
     sep: Optional[str] = ' ', 
-    symbol: str, 
-    length: int, 
+    symbol: str = '%', 
+    length: int = 3, 
     semi: bool = True, 
     startNew: bool = True, 
     endNew: bool = True,
