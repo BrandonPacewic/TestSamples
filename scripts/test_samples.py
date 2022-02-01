@@ -14,13 +14,19 @@ DBG_DEF = 'DBG_MODE'
 """Should be added to a new custom modual"""
 def separator(
     *args, 
-    type: str, 
+    symbol: str, 
     length: int, 
     semi: bool = True, 
     startNew: bool = True, 
     endNew: bool = True,
     ) -> None:
-    pass
+    if startNew:
+        print(flush=False, end='')
+
+    for i in range length:
+        print(symbol, flush=False, end='')
+
+
 
 class colors:
     OKGREEN = '\033[92m'
@@ -81,8 +87,6 @@ class timer:
         return str('{:.3f}'.format(self.tics[-1] - self.tics[-2]))
 
 
-
-
 def compair_output_vs_expected(programOutput: List[str], programExpected: List[str]) -> None:
     def _compair_lines(
         primaryLines: List[str], 
@@ -116,7 +120,7 @@ def compair_output_vs_expected(programOutput: List[str], programExpected: List[s
             return colors.OKGREEN
 
     errors.check_condition(
-        len(programOutput) == len(programOutput), 
+        len(programOutput) == len(programExpected), 
         color=colors.WARNINGYELLOW, 
         msg=errors.LEN_MISSMATCH, 
         leave=False,
