@@ -23,21 +23,19 @@ testsamples <filename>
 ```
 #0 [A - B, A * B]: -4 5
 Compairing...
-Time: 0.003s
--------------
+Time: 0.610s
+--------------
 Expected:
-
 10
--------------
+--------------
 Output:
-
 6
 
--------------
+--------------
 
 0 / 1 Tests Passed
 
-Found: 6 ~ Expected: 1 ~ MissmatchOnLine: 1
+Found: 6 ~ Expected: 1 ~ Line: 1
 
 ```
 
