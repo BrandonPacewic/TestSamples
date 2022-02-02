@@ -94,6 +94,7 @@ class timer:
             print('Elapsed is null')
             exit()
 
+
 def compair_output_vs_expected(programOutput: List[str], programExpected: List[str]) -> None:
     def _compair_lines(
         primaryLines: List[str], 
@@ -200,6 +201,7 @@ def locate_target_line(fname: str, target: str) -> Optional[int]:
     
     return None
 
+
 def cpp_program_interact(lines: List[str], file: str) -> List[str]:
     def _gpp_assert_file_in_dir(fname: str) -> None:
         try:
@@ -207,6 +209,7 @@ def cpp_program_interact(lines: List[str], file: str) -> List[str]:
         except AssertionError:
             errors.gpp_file_not_found(fname)
 
+    _gpp_assert_file_in_dir(file)
     os.system(f'g++ -g -std=c++17 -Wall -D{DBG_DEF} {file}')
 
     program = Popen([f'{os.getcwd()}/a.out'], stdout=PIPE, stdin=PIPE)
