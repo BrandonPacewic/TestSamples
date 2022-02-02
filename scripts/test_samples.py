@@ -1,7 +1,7 @@
 #! /usr/bin/python3
 
 from subprocess import Popen, PIPE
-from typing import List, Optional, Any, Tuple
+from typing import List, Optional, Tuple
 
 import argparse
 import logging
@@ -24,7 +24,7 @@ def separator(
     if startNew:
         print(end='\n', flush=False)
 
-    for i in range(length):
+    for _ in range(length):
         print(symbol, end='', flush=False)
 
     if semi:
