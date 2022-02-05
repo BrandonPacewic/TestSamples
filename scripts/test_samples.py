@@ -11,7 +11,7 @@ import time
 DBG_DEF = 'DBG_MODE'
 
 
-"""Should be added to a new custom modual"""
+"""Should be added to a new modual"""
 def separator(
     *values: Optional[object],
     sep: Optional[str] = ' ', 
