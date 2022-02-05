@@ -103,6 +103,11 @@ def main(file: str):
         format=f'{colors.WARNINGRED}[ERROR - %(asctime)s]{colors.ENDC} - %(message)s',
     )
 
+    parser = argparse.ArgumentParser()
+    parser.add_argument('file', type=str)
+    args = parser.parse_args()
+    file = args.file[0]
+
     file = file if file[-3:] != '.cc' else file[:-3]
     inputFile = f'{file}_input.txt'
     expectedFile = f'{file}_expected.txt'
@@ -117,6 +122,9 @@ def main(file: str):
     separator(symbol='-', length=13, semi=False, startNew=False)
     expectedLines = muti_input()
     write_lines(expectedFile, expectedLines)
+
+    separator(symbol='-', length=13, semi=False)
+    print(f'{colors.OKGREEN}[ACCEPTED]{colors.ENDC}', end='\n\n')
 
 
 if __name__ == '__main__':
