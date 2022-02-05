@@ -20,8 +20,7 @@ def separator(
     if startNew:
         sys.stdout.write('\n')
 
-    for _ in range(length):
-        sys.stdout.write(symbol)
+    sys.stdout.write(f'{symbol * length}')
 
     if semi:
         sys.stdout.write(':')
