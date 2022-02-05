@@ -10,29 +10,30 @@ import os
 """Should be added to a new modual"""
 def separator(
     *values: Optional[object],
-    sep: Optional[str] = ' ', 
-    symbol: str = '%', 
+    symbol: str, 
+    sep: Optional[str] = '', 
     length: int = 3, 
     semi: bool = True, 
     startNew: bool = True, 
     endNew: bool = True,
     ) -> None:
     if startNew:
-        print(end='\n', flush=False)
+        sys.stdout.write('\n')
 
     for _ in range(length):
-        print(symbol, end='', flush=False)
+        sys.stdout.write(symbol)
 
     if semi:
-        print(':', end='', flush=False)
+        sys.stdout.write(':')
 
     if endNew:
-        print(end='\n', flush=False)
+        sys.stdout.write('\n')
 
-    for arg in values:
-        print(arg, end=sep, flush=False)
+    for value in values:
+        sys.stdout.write(f'{value}{sep}')
 
-    print(end='\n', flush=True)
+    sys.stdout.write('\n')
+    sys.stdout.flush()
 
 
 class colors:
@@ -104,10 +105,19 @@ def main(file: str):
     )
 
     file = file if file[-3:] != '.cc' else file[:-3]
+    inputFile = f'{file}_input.txt'
+    expectedFile = f'{file}_expected.txt'
 
     if not do_files_exist(f'{file}_input.txt', f'{file}_expected.txt'):
         create_files(file)
 
+    separator(symbol='-', length=13, semi=False, startNew=False)
+    inputLines = muti_input()
+    write_lines(inputFile, inputLines)
+
+    separator(symbol='-', length=13, semi=False, startNew=False)
+    expectedLines = muti_input()
+    write_lines(expectedFile, expectedLines)
 
 
 if __name__ == '__main__':
