@@ -25,8 +25,7 @@ def separator(
     if startNew:
         sys.stdout.write('\n')
 
-    for _ in range(length):
-        sys.stdout.write(symbol)
+    sys.stdout.write(f'{symbol * length}')
 
     if semi:
         sys.stdout.write(':')
@@ -39,6 +38,7 @@ def separator(
 
     sys.stdout.write('\n')
     sys.stdout.flush()
+
 
 class colors:
     OKGREEN = '\033[92m'
