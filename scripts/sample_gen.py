@@ -10,13 +10,13 @@ import os
 """Should be added to a new modual"""
 def separator(
     *values: Optional[object],
-    symbol: str, 
-    sep: Optional[str] = '', 
-    length: int = 3, 
-    semi: bool = True, 
-    startNew: bool = True, 
+    symbol: str,
+    sep: Optional[str] = '',
+    length: int = 3,
+    semi: bool = True,
+    startNew: bool = True,
     endNew: bool = True,
-    ) -> None:
+) -> None:
     if startNew:
         sys.stdout.write('\n')
 
@@ -43,10 +43,10 @@ class colors:
 
 
 def check_condition(
-    condition: bool = False, 
-    expect: bool = True, 
-    color: str = colors.WARNINGRED, 
-    msg: str = None, 
+    condition: bool = False,
+    expect: bool = True,
+    color: str = colors.WARNINGRED,
+    msg: str = None,
     leave: bool = True,
 ) -> None:
     """Template for basic console logging"""
@@ -68,7 +68,8 @@ def do_files_exist(*args) -> bool:
     if all(exist):
         for arg in args:
             logging.info(f'{colors.WARNINGYELLOW}[WARNING]{colors.ENDC} found existing file -> {arg}')
-        check_condition(color=colors.WARNINGYELLOW, msg='[WORKING]', leave=False)
+        check_condition(color=colors.WARNINGYELLOW,
+                        msg='[WORKING]', leave=False)
         return True
     return False
 
