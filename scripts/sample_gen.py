@@ -5,6 +5,7 @@ from typing import List, Optional
 import argparse
 import logging
 import os
+import sys
 
 
 """Should be added to a new modual"""
@@ -74,7 +75,7 @@ def do_files_exist(*args) -> bool:
     return False
 
 
-def multi_input() -> List[str]:
+def muti_input() -> List[str]:
     inputs = []
     while True:
         currentInput = f'{str(input())}\n'
