@@ -117,11 +117,13 @@ def main():
     if not do_files_exist(f'{file}_input.txt', f'{file}_expected.txt'):
         create_files(file)
 
-    separator(symbol='-', length=13, semi=False, startNew=False)
+    separator('[INPUT]',
+        symbol='-', length=13, semi=False, startNew=False)
     inputLines = muti_input()
     write_lines(inputFile, inputLines)
 
-    separator(symbol='-', length=13, semi=False, startNew=False)
+    separator('[EXPECTED]', 
+        symbol='-', length=13, semi=False, startNew=False)
     expectedLines = muti_input()
     write_lines(expectedFile, expectedLines)
 
