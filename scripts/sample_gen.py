@@ -5,6 +5,7 @@ from typing import List, Optional
 import argparse
 import logging
 import os
+import sys
 
 
 """Should be added to a new modual"""
@@ -74,7 +75,7 @@ def do_files_exist(*args) -> bool:
     return False
 
 
-def multi_input() -> List[str]:
+def muti_input() -> List[str]:
     inputs = []
     while True:
         currentInput = f'{str(input())}\n'
@@ -98,7 +99,7 @@ def create_files(file: str) -> None:
     os.system(f'touch {file}_expected.txt')
 
 
-def main(file: str):
+def main():
     logging.basicConfig(
         level=logging.DEBUG,
         format=f'{colors.WARNINGRED}[ERROR - %(asctime)s]{colors.ENDC} - %(message)s',
@@ -107,7 +108,7 @@ def main(file: str):
     parser = argparse.ArgumentParser()
     parser.add_argument('file', type=str)
     args = parser.parse_args()
-    file = args.file[0]
+    file = args.file
 
     file = file if file[-3:] != '.cc' else file[:-3]
     inputFile = f'{file}_input.txt'
