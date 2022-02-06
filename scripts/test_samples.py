@@ -6,37 +6,38 @@ from typing import List, Optional, Tuple
 import argparse
 import logging
 import os
+import sys
 import time
 
 DBG_DEF = 'DBG_MODE'
 
 
-"""Should be added to a new custom modual"""
+"""Should be added to a new modual"""
 def separator(
     *values: Optional[object],
-    sep: Optional[str] = ' ', 
-    symbol: str = '%', 
+    symbol: str, 
+    sep: Optional[str] = '', 
     length: int = 3, 
     semi: bool = True, 
     startNew: bool = True, 
     endNew: bool = True,
     ) -> None:
     if startNew:
-        print(end='\n', flush=False)
+        sys.stdout.write('\n')
 
-    for _ in range(length):
-        print(symbol, end='', flush=False)
+    sys.stdout.write(f'{symbol * length}')
 
     if semi:
-        print(':', end='', flush=False)
+        sys.stdout.write(':')
 
     if endNew:
-        print(end='\n', flush=False)
+        sys.stdout.write('\n')
 
-    for arg in values:
-        print(arg, end=sep, flush=False)
+    for value in values:
+        sys.stdout.write(f'{value}{sep}')
 
-    print(end='\n', flush=True)
+    sys.stdout.write('\n')
+    sys.stdout.flush()
 
 
 class colors:
@@ -136,7 +137,6 @@ def compair_output_vs_expected(programOutput: List[str], programExpected: List[s
 
     separator(
         'Expected:',
-        sep='',
         symbol='-',
         length=14,
         semi=False,
@@ -147,7 +147,6 @@ def compair_output_vs_expected(programOutput: List[str], programExpected: List[s
 
     separator(
         'Output:',
-        sep='',
         symbol='-',
         length=14,
         semi=False,
@@ -157,10 +156,10 @@ def compair_output_vs_expected(programOutput: List[str], programExpected: List[s
     goodCount, missmatch = _compair_lines(programOutput, programExpected)
 
     separator(
-        sep='',
         symbol='-',
         length=14,
         semi=False,
+        startNew=False,
     )
     _print_args(
         _assign_color(goodCount, len(programExpected)),
@@ -275,8 +274,7 @@ def main():
     )
 
     """Add suffix"""
-    if file[-3:] != '.cc':
-        file += '.cc'
+    file = file + '.cc' if file[-3:] != '.cc' else file
 
     """Set to default"""
     if inputOperator is None: 
