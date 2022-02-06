@@ -56,20 +56,19 @@ sample_gen <file name>
 ##### Input
 
 ```
-[CREATEING FILES] With Base -> <file name>
-[INPUT TEXT] Enter Input:
---------------
+[CREATEING FILES] With Base -> <fname>
+-------------
+[INPUT]
 <sample input>
 
---------------
-
-[EXPECTED TEXT] Enter Expected
---------------
+-------------
+[EXPECTED]
 <sample input>
 
---------------
 
-[Accepted]
+-------------
+
+[ACCEPTED]
 
 ```
 
