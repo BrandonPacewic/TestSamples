@@ -213,11 +213,11 @@ def cpp_program_interact(lines: List[str], file: str) -> List[str]:
     compileTime.add_tic()
 
     program = Popen([f'{os.getcwd()}/a.out'], stdout=PIPE, stdin=PIPE)
-    global compileTime = timer()
+    global runTime = timer()
     for line in lines:
         program.stdin.write(line.encode('utf-8'))
     program.stdin.flush()
-    compileTime.add_tic()
+    runTime.add_tic()
 
     return [line.decode() for line in program.stdout.readlines()]
 
@@ -295,7 +295,8 @@ def main():
 
     """Program output"""
     print('Compairing...')
-    print(f'Time: {compileTime.get_elapsed()}s')
+    print(f'Compile time: {compileTime.get_elapsed()}s')
+    print(f'Runtime: {runTime.get_elapsed()}s')
     compair_output_vs_expected(
         programOutput, 
         get_file_lines(expectedFile)
