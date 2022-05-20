@@ -274,11 +274,11 @@ def main():
     )
 
     """Add suffix"""
-    file = file + '.cc' if file[-3:] != '.cc' else file
+    file = file + '.cpp' if file[-4:] != '.cpp' else file
 
     """Set to default"""
     if inputOperator is None: 
-        inputFile, expectedFile = f'{file[:-3]}_input.txt', f'{file[:-3]}_expected.txt'
+        inputFile, expectedFile = f'{file[:-4]}_input.txt', f'{file[:-4]}_expected.txt'
 
     """Looking for debug template"""
     errors.check_condition(
