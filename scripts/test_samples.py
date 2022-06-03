@@ -11,7 +11,6 @@ import time
 
 DBG_DEF = 'DBG_MODE'
 
-
 """Should be added to a new modual"""
 def separator(
     *values: Optional[object],
@@ -46,6 +45,21 @@ class colors:
     WARNINGYELLOW = '\033[93m'
     ENDC = '\033[0m'
 
+   
+class timer:
+    def __init__(self):
+        self.tics = [time.perf_counter()]
+
+    def add_tic(self) -> None:
+        self.tics.append(time.perf_counter())
+
+    def get_elapsed(self) -> str:
+        try:
+            return str('{:.3f}'.format(self.tics[-1] - self.tics[-2]))
+        except IndexError:
+            print('Elapsed is null')
+            exit()
+   
 
 class errors:
     EXPECTED_ARGUMENTS = '[EXPECTED ONE ARGUMENTS]'
@@ -79,21 +93,6 @@ class errors:
         except AssertionError:
             logging.error(f'{color}{msg}{colors.ENDC}')
             exit() if leave else print(f'{colors.WARNINGYELLOW}[WORKING]{colors.ENDC}')
-
-
-class timer:
-    def __init__(self):
-        self.tics = [time.perf_counter()]
-
-    def add_tic(self) -> None:
-        self.tics.append(time.perf_counter())
-
-    def get_elapsed(self) -> str:
-        try:
-            return str('{:.3f}'.format(self.tics[-1] - self.tics[-2]))
-        except IndexError:
-            print('Elapsed is null')
-            exit()
 
 
 def compair_output_vs_expected(programOutput: List[str], programExpected: List[str]) -> None:
@@ -209,12 +208,19 @@ def cpp_program_interact(lines: List[str], file: str) -> List[str]:
             errors.gpp_file_not_found(fname)
 
     _gpp_assert_file_in_dir(file)
+    global compileTime
+    compileTime = timer()
     os.system(f'g++ -g -std=c++17 -Wall -D{DBG_DEF} {file}')
+    compileTime.add_tic()
 
     program = Popen([f'{os.getcwd()}/a.out'], stdout=PIPE, stdin=PIPE)
+    global runTime
+    runTime = timer()
+ 
     for line in lines:
         program.stdin.write(line.encode('utf-8'))
     program.stdin.flush()
+    runTime.add_tic()
 
     return [line.decode() for line in program.stdout.readlines()]
 
@@ -274,11 +280,11 @@ def main():
     )
 
     """Add suffix"""
-    file = file + '.cc' if file[-3:] != '.cc' else file
+    file = file + '.cpp' if file[-4:] != '.cpp' else file
 
     """Set to default"""
     if inputOperator is None: 
-        inputFile, expectedFile = f'{file[:-3]}_input.txt', f'{file[:-3]}_expected.txt'
+        inputFile, expectedFile = f'{file[:-4]}_input.txt', f'{file[:-4]}_expected.txt'
 
     """Looking for debug template"""
     errors.check_condition(
@@ -288,13 +294,12 @@ def main():
     )
 
     """Running"""
-    tics = timer()
     programOutput = cpp_program_interact(get_file_lines(inputFile), file)
-    tics.add_tic()
 
     """Program output"""
     print('Compairing...')
-    print(f'Time: {tics.get_elapsed()}s')
+    print(f'Compile time: {compileTime.get_elapsed()}s')
+    print(f'Runtime: {runTime.get_elapsed()}s')
     compair_output_vs_expected(
         programOutput, 
         get_file_lines(expectedFile)
