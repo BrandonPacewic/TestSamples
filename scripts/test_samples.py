@@ -208,12 +208,15 @@ def cpp_program_interact(lines: List[str], file: str) -> List[str]:
             errors.gpp_file_not_found(fname)
 
     _gpp_assert_file_in_dir(file)
-    global compileTime = timer()
+    global compileTime
+    compileTime = timer()
     os.system(f'g++ -g -std=c++17 -Wall -D{DBG_DEF} {file}')
     compileTime.add_tic()
 
     program = Popen([f'{os.getcwd()}/a.out'], stdout=PIPE, stdin=PIPE)
-    global runTime = timer()
+    global runTime
+    runTime = timer()
+ 
     for line in lines:
         program.stdin.write(line.encode('utf-8'))
     program.stdin.flush()
