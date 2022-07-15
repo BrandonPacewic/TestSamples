@@ -1,7 +1,5 @@
 # Test Samplessssss
 
-----
-
 Python script for testing and validating competitive programming test cases
 
 Additionaly it defines macros in cc templates for debugging 
@@ -11,14 +9,14 @@ It will compair the output of the program with the expected output of the proble
 This script will only work with specific cc program file templates 
 examples can be found [Here](https://github.com/BrandonPacewic/CompetitiveProgramming/tree/master/templates)
 
-### Example
+## Example
 
-##### Input
+### Input
 
 ```shell
 testsamples <filename>
 ```
-##### Output
+### Output
 
 ```
 #0 [A - B, A * B]: -4 5
@@ -41,8 +39,6 @@ Found: 6 ~ Expected: 1 ~ Line: 1
 
 # Sample Gen
 
-----
-
 Yet another python script for generating the sample .txt files used
 
 by the test samples script
@@ -53,7 +49,7 @@ by the test samples script
 sample_gen <file name>
 ```
 
-##### Input
+### Input
 
 ```
 [CREATEING FILES] With Base -> <fname>
@@ -72,7 +68,7 @@ sample_gen <file name>
 
 ```
 
-### Install
+## Install
 
 ----
 
