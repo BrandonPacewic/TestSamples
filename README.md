@@ -70,8 +70,6 @@ sample_gen <file name>
 
 ## Install
 
-----
-
 For your convenience there is a install script that will create the global commands for you
 
 ```
