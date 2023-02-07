@@ -1,37 +1,13 @@
-#! /usr/bin/python3
-
-from subprocess import Popen, PIPE
-from typing import List, Optional
+# Copyright (c) Brandon Pacewic
+# SPDX-License-Identifier: MIT
 
 import argparse
-import logging
 import os
-import sys
 import time
 
-DEBUG_MACRO = '#ifdef DBG_MODE\n'
+from subprocess import Popen, PIPE
+
 DEBUG_DEFINITION = 'DBG_MODE'
-
-def separator(*values: Optional[object], symbol: str = '-', separator: str = '', 
-              length: int = 3, semi: bool = True, start_new: bool = True, 
-              end_new: bool = True) -> None:
-    if start_new:
-        sys.stdout.write('\n')
-
-    sys.stdout.write(f'{symbol * length}')
-
-    if semi:
-        sys.stdout.write(':')
-
-    if end_new:
-        sys.stdout.write('\n')
-
-    for value in values:
-        sys.stdout.write(f'{value}{separator}')
-
-    sys.stdout.write('\n')
-    sys.stdout.flush()
-
 
 class Colors:
     GREEN = '\033[92m'
@@ -44,112 +20,36 @@ class Timer:
     def __init__(self):
         self.tics = [time.perf_counter()]
 
-    def add_tic(self) -> None:
+    def add_tic(self):
         self.tics.append(time.perf_counter())
 
-    def get_elapsed(self) -> str:
+    def get_elapsed(self):
         try:
             return str('{:.3f}'.format(self.tics[-1] - self.tics[-2]))
         except IndexError:
             print('Elapsed is null')
-
-
-def check_condition(condition: bool = False, expect: bool = True, color: str = Colors.RED, 
-                    msg: str = None, leave: bool = True) -> None:
-    """Template for basic console logging"""
-    try:
-        assert(condition is expect)
-    except AssertionError:
-        logging.error(f'{color}{msg}{Colors.END}')
-        
-        if leave:
             exit()
-        else:
-            logging.info(f'{Colors.YELLOW}[WORKING...]{Colors.END}')
 
 
-class Errors:
-    EXPECTED_ARGUMENTS = '[EXPECTED ONE ARGUMENT]'
-    INVALID_OPERATOR = '[INVALID OPERATOR FOUND]'
-    NO_FILE = '[EXPECTED FILE FOUND NONE]'
-    LENGTH_MISMATCH = '[LINE LENGTH MISMATCH]'
-    NO_TARGET_LINE = '[NO TARGET LINE FOUND]'
-
-
-def print_file_lines(lines: List[str]) -> None:
-    for line in lines:
-        print(line, end='')
-
-
-def compare_output_against_expected(program_output: List[str], expected_output: List[str]) -> None:
-    """Compares the output of a program against the expected output"""
-    check_condition(len(program_output) == len(expected_output), True, 
-                    Colors.RED, Errors.LENGTH_MISMATCH, False)
-
-    good_count = 0
-    mismatches = []
-
-    for i, (output, expected) in enumerate(zip(program_output, expected_output)):
-        if output == expected:
-            good_count += 1
-        else:
-            mismatches.append((output, expected, i))
-
-    separator('Expected', length=14, semi=False, start_new=False)
-    print_file_lines(expected_output)
-
-    separator('Output:', length=14, semi=False, start_new=True)
-    print_file_lines(program_output)
-
-    separator(length=14, semi=False, start_new=True)
-
-    color = Colors.GREEN if good_count == len(program_output) else Colors.RED
-
-    print(f'{color}{good_count} / {len(program_output)} Tests Passed{Colors.END}\n')
-
-    for i, mismatch in enumerate(mismatches):
-        print(f'Found: {mismatch[0][:-1]} ~ Expected: {mismatch[1][:-1]} ~ Test: {mismatch[2] + 1}')
-
-        if i >= len(mismatches) -1:
-            print('') # New line
-
-
-def get_file_lines(fname: str) -> List[str]:
-    try:
-        with open(fname, 'r') as file:
-            lines = file.readlines()
-    except FileNotFoundError:
-        logging.error(f'{Colors.RED}{Errors.NO_FILE}{Colors.END}')
-        exit()
-
-    return lines
-
-
-def locate_target_line(fname: str, target: str) -> int:
-    try:
-        with open(fname, 'r') as file:
-            lines = file.readlines()
-    except FileNotFoundError:
-        logging.error(f'{Colors.RED}{Errors.NO_FILE}{Colors.END}')
-        exit()
-
+def print_file_lines(lines):
     for i, line in enumerate(lines):
-        if target in line:
-            return i
-
-    logging.error(f'{Colors.RED}{Errors.NO_TARGET_LINE}{Colors.END}')
-    exit()
+        print(line.strip(), end='\n' if i != len(lines) - 1 else '')
 
 
-def cpp_program_interact(input: List[str], file: str) -> any:
+def get_file_lines(fname):
+    with open(fname, 'r') as file:
+        return file.readlines()
+
+
+def cpp_program_interact(input_lines, file):
     compile_time = Timer()
     os.system(f'g++ -g -std=c++17 -Wall -D{DEBUG_DEFINITION} {file}')
     compile_time.add_tic()
 
-    program = Popen([f'{os.getcwd()}/a.out'], stdin=PIPE, stdout=PIPE)
+    program = Popen(f'./a.exe', stdin=PIPE, stdout=PIPE, stderr=PIPE)
     run_time = Timer()
 
-    for line in input:
+    for line in input_lines:
         program.stdin.write(line.encode())
 
     program.stdin.flush()
@@ -158,33 +58,71 @@ def cpp_program_interact(input: List[str], file: str) -> any:
 
     output = [line.decode() for line in program.stdout.readlines()]
 
-    return output, compile_time, run_time
+    return output, compile_time.get_elapsed(), run_time.get_elapsed()
 
 
 def main():
-    logging.basicConfig(
-        level=logging.INFO,
-        format='%(asctime)s - %(levelname)s - %(message)s')
-
     parser = argparse.ArgumentParser(description='C++ Test Runner')
-    parser.add_argument('file', type=str, help='The file to run')
+    parser.add_argument('file', type=str, help='C++ file to run against tests')
     args = parser.parse_args()
 
     file = args.file
 
-    if file[-4:] != '.cpp':
+    if not file.endswith('.cpp'):
         file += '.cpp'
 
-    check_condition(locate_target_line(file, DEBUG_MACRO) is not None, True, 
-                                       Colors.YELLOW, Errors.NO_TARGET_LINE, False)
-    program_input = get_file_lines(f'{file[:-4]}_input.txt')
-    expected_output = get_file_lines(f'{file[:-4]}_expected.txt')
-    program_output, compile_time, run_time = cpp_program_interact(program_input, file)
+    if file.startswith('.\\'):
+        file = file[2:]
+
+    test_input = f'{file.split(".")[0]}_input.txt'
+    test_output = f'{file.split(".")[0]}_output.txt'
+
+    program_input = get_file_lines(test_input)
+    program_expected_output = get_file_lines(test_output)
+    program_actual_output, compile_time, run_time = cpp_program_interact(program_input, file)
 
     print('Comparing...')
-    print(f'Compile Time: {compile_time.get_elapsed()}')
-    print(f'Run Time: {run_time.get_elapsed()}')
-    compare_output_against_expected(program_output, expected_output)
+    print(f'Compile time: {compile_time}s')
+    print(f'Run time: {run_time}s', end='')
+
+    good_count = 0
+    total_count = len(program_expected_output)
+    mismatches = []
+
+    for i, output in enumerate(program_actual_output):
+        program_actual_output[i] = output.strip()
+
+    for i, expected in enumerate(program_expected_output):
+        program_expected_output[i] = expected.strip()
+
+    for i, (output, expected) in enumerate(zip(program_actual_output, program_expected_output)):
+        if output == expected:
+            good_count += 1
+        else:
+            mismatches.append((output, expected, i + 1))
+
+    print('\n--------------')
+    print('Expected:')
+    print_file_lines(program_expected_output)
+
+    print('\n--------------')
+    print('Actual:')
+    print_file_lines(program_actual_output)
+
+    print('\n--------------')
+
+    if len(mismatches) > 0:
+        print('Mismatches:')
+
+    for mismatch in mismatches:
+        print(f'Line {mismatch[2]}: {Colors.RED}{mismatch[0]}{Colors.END} != {Colors.GREEN}{mismatch[1]}{Colors.END}')
+
+    if good_count == len(program_expected_output):
+        print(f'{Colors.GREEN}All tests passed!{Colors.END}')
+    elif good_count >= 1:
+        print(f'{Colors.YELLOW}{good_count} / {total_count} tests passed.{Colors.END}')
+    else:
+        print(f'{Colors.RED}No tests passed.{Colors.END}')
 
 
 if __name__ == '__main__':
