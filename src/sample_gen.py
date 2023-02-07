@@ -20,9 +20,9 @@ def main():
     test_input = f'{file}_input.txt'
     test_output = f'{file}_output.txt'
 
-    os.system(f'code {test_input}')
     os.system(f'code {test_output}')
+    os.system(f'code {test_input}')
 
-
+    
 if __name__ == '__main__':
     main()
