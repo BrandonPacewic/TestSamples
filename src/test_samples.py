@@ -1,8 +1,11 @@
+#! /usr/bin/python3
+
 # Copyright (c) Brandon Pacewic
 # SPDX-License-Identifier: MIT
 
 import argparse
 import os
+import sys
 import time
 
 from subprocess import Popen, PIPE
@@ -46,7 +49,10 @@ def cpp_program_interact(input_lines, file):
     os.system(f'g++ -g -std=c++17 -Wall -D{DEBUG_DEFINITION} {file}')
     compile_time.add_tic()
 
-    program = Popen(f'./a.exe', stdin=PIPE, stdout=PIPE, stderr=PIPE)
+    program = Popen(
+        './a.exe' if sys.platform == 'win32' else './a.out',
+        stdin=PIPE, stdout=PIPE, stderr=PIPE
+    )
     run_time = Timer()
 
     for line in input_lines:
